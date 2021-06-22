@@ -1,19 +1,31 @@
 * {
     margin: 0px;
+    font-family: Arial, Helvetica, sans-serif;
 }
-
 
 header {
     display: flex;
     justify-content: space-between;
     margin: 5px;
-    padding: 20px;
+    padding: 10px;
 }
 
 main {
     margin: 5px;
     display: flex;
     justify-content: center;
+}
+
+button {
+    margin: 20px 0px 10px 0px;
+    background-color: blueviolet;
+    color: white;
+    border-radius: 5px;
+}
+
+button:hover {
+    color: black;
+    cursor: pointer;
 }
 
 .highscores {
@@ -28,19 +40,21 @@ main {
 }
 
 .quiz {
-    background-color: beige;
     width: 50%;
     flex-direction: row;
     padding: 10px;
     margin: 10px;
+    text-align: center;
 }
 
 .question {
-    background-color: red;
     display: flex;
+    justify-content: center;
+    margin: 10px 0px 10px 0px;
 }
 
 .choices {
-    background-color: blanchedalmond;
     display: flex;
+    margin: 25px 0px 0px 0px;
+    text-align: center;
 }

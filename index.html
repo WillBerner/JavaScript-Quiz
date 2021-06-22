@@ -10,30 +10,37 @@
 <body>
     <header>
         <div class="highscores">
-            <h2 class="highscore-link">
-                Highscores
-            </h2>
+            <h4 class="highscore-link" id="highscore-link">
+                View Highscores
+            </h4>
         </div>
         <div>
-            <h5 class="timer">
+            <h4 class="timer">
                 0 seconds remaining.
-            </h5>
+            </h4>
         </div>
     </header>
 
     <main>
         <div class="quiz">
             <div class="question">
-                <h1>
-                    This is a question
+                <h1 class="description" id="description">
+                    Coding Quiz Challenge
                 </h1>
             </div>
             <div class="choices">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque quasi ex neque ea rem? Quod soluta dolor magni suscipit vero? Reprehenderit minima nam laudantium officia animi voluptatum eveniet eligendi tempora!
+                <h4 class="choiceDescription" id="choiceDescription">
+                    Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!  
+                </h4>
+            </div>
+            <div class="startButton" id="startButton">
+                <button>
+                    Start Quiz
+                </button>
             </div>
         </div>
     </main>
 
-    <script src="./assets/js/index.js"></script>
+    <script src="./assets/js/index.js" type="module"></script>
 </body>
 </html>
