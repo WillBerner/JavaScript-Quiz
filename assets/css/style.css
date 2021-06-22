@@ -1,0 +1,50 @@
+* {
+    margin: 0px;
+}
+
+
+header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+main {
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.highscores {
+    background-color: aqua;
+    display: flex;
+    float: left;
+    padding: 5px;
+}
+
+.time {
+    background-color: aquamarine;
+    display: flex;
+    float: right;
+    align-items: center;
+    padding: 5px;
+}
+
+.quiz {
+    background-color: beige;
+    width: 50%;
+    flex-direction: row;
+    padding: 10px;
+    margin: 10px;
+}
+
+.question {
+    background-color: red;
+    display: flex;
+}
+
+.choices {
+    background-color: blanchedalmond;
+    display: flex;
+}
