@@ -4,10 +4,10 @@
 
 
 header {
-    width: 100%;
     display: flex;
     justify-content: space-between;
     margin: 5px;
+    padding: 20px;
 }
 
 main {
@@ -17,16 +17,12 @@ main {
 }
 
 .highscores {
-    background-color: aqua;
     display: flex;
-    float: left;
     padding: 5px;
 }
 
-.time {
-    background-color: aquamarine;
+.timer {
     display: flex;
-    float: right;
     align-items: center;
     padding: 5px;
 }

@@ -1,23 +1,24 @@
 var questionEl = document.querySelector(".question");
-var timeEl = document.querySelector(".time")
+var timeEl = document.querySelector(".timer")
 
-var timeRemaining = 30;
+var timeRemaining = 10;
 
 // Timer function
 var countdown = setInterval(function() {
     if (timeRemaining > 1) {
-        timeEl.textContent = timeRemaining;
+        timeEl.textContent = `${timeRemaining} seconds remaing`;
         timeRemaining--;
     } else if (timeRemaining === 1) {
-        timeEl.textContent = timeRemaining;
+        timeEl.textContent = `${timeRemaining} seconds remaing`;
         timeRemaining--;
     } else {
-        timeEl.textContent = timeRemaining;
+        timeEl.textContent = "Time is up";
         clearInterval(countdown);
     }
 }, 1000);
 
-countdown();
+
+
 
 setTimeout(function () {
     var nextQuestion = document.createElement('h1');
