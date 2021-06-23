@@ -35,6 +35,10 @@ button:hover {
     padding: 5px;
 }
 
+.highscores:hover {
+    cursor: pointer;
+}
+
 .scoreDisplay {
     align-items: center;
     display: flex;

@@ -8,14 +8,16 @@ var timeEl = document.querySelector(".timer");
 var scoreEl = document.querySelector(".score")
 var descriptionEl = document.getElementById("description");
 var choicesEl = document.getElementById("choices");
+var choiceDescriptionEl = document.getElementById("choiceDescription");
 var quizEl = document.getElementById("quiz");
+var startButtonEl = document.getElementById("startButton");
 
 var countdown = null;
 
 
 // Function to start playing the quiz
 function playQuiz() {
-    document.getElementById("startButton").style.display = "none";
+    startButtonEl.style.display = "none";
 
     startClock(10);
     showQuestion();
@@ -23,6 +25,21 @@ function playQuiz() {
 
 // Function called when View Highscores is clicked
 function showHighScores() {
+    descriptionEl.innerText = "Highscores";
+    choicesEl.innerHTML = "";
+    choicesEl.setAttribute("style", "flex-direction: column");
+    startButtonEl.style.display = "none";
+
+    var highscores = JSON.parse(localStorage.getItem("highscores"));
+
+    highscores.sort((a, b) => a.userScore - b.userScore);
+
+    highscores.forEach(highscore => {
+        var highscoreEl = document.createElement("h4");
+        highscoreEl.textContent = highscore.userInitials + ": " + highscore.userScore;
+        choicesEl.appendChild(highscoreEl);
+    })
+
 }
 
 // Show a question on the screen
@@ -133,6 +150,20 @@ function stopGame() {
     var thanksMessageEl = document.createElement("h3");
     thanksMessageEl.textContent = `Your final score was ${score}.`;
 
+    createSaveGame();
+
+    choicesEl.appendChild(thanksMessageEl);
+}
+
+function changeScore(value) {
+    score = score + value;
+    if (score < 0) {
+        score = 0;
+    }
+    updateScore();
+}
+
+function createSaveGame() {
     var saveDivEl = document.createElement("div");
     saveDivEl.className = "saveGameDiv";
 
@@ -146,6 +177,22 @@ function stopGame() {
 
     var saveButtonEl = document.createElement("button");
     saveButtonEl.textContent = "Submit";
+    saveButtonEl.addEventListener("click", function() {
+        var highscores = JSON.parse(localStorage.getItem("highscores"));
+        if (highscores) {
+            highscores.push({
+                userInitials: saveNameInputEl.value,
+                userScore: score
+            })
+        } else {
+            highscores = [{
+                userInitials: saveNameInputEl.value,
+                userScore: score
+            }]
+        }
+
+        localStorage.setItem("highscores", JSON.stringify(highscores));
+    });
 
 
     
@@ -153,20 +200,7 @@ function stopGame() {
     saveDivEl.appendChild(saveNameInputEl);
     saveDivEl.appendChild(saveButtonEl);
 
-    choicesEl.appendChild(thanksMessageEl);
     quizEl.appendChild(saveDivEl);
-}
-
-function changeScore(value) {
-    score = score + value;
-    if (score < 0) {
-        score = 0;
-    }
-    updateScore();
-}
-
-function createSaveGame() {
-
 }
 
 setEventListeners();
