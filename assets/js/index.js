@@ -4,13 +4,20 @@ let score = 0;
 let timeRemaining = 0;
 let correctIndex = null;
 
-var timeEl = document.querySelector(".timer")
+var timeEl = document.querySelector(".timer");
+var scoreEl = document.querySelector(".score")
+var descriptionEl = document.getElementById("description");
+var choicesEl = document.getElementById("choices");
+var quizEl = document.getElementById("quiz");
+
+var countdown = null;
+
 
 // Function to start playing the quiz
 function playQuiz() {
     document.getElementById("startButton").style.display = "none";
 
-    startClock(75);
+    startClock(10);
     showQuestion();
 }
 
@@ -48,7 +55,7 @@ function showQuestion() {
 function startClock(duractionInSeconds) {
 
 timeRemaining = duractionInSeconds;
-    var countdown = setInterval(function() {
+    countdown = setInterval(function() {
         if (timeRemaining > 1) {
             updateTimer();
             timeRemaining--;
@@ -57,13 +64,24 @@ timeRemaining = duractionInSeconds;
             timeRemaining--;
         } else {
             timeEl.textContent = "Time is up";
+            stopGame();
             clearInterval(countdown);
         }
     }, 1000);
 }
 
-function updateTimer() {
+function updateTimer(wrongAnswer = false) {
+    if (timeRemaining === 0) {
+        clearInterval(countdown);
+        stopGame();
+        return;
+    }
     timeEl.textContent = `${timeRemaining} seconds remaing`;
+    if (wrongAnswer) {
+        timeEl.setAttribute("style", "color: red;");
+    } else {
+        timeEl.setAttribute("style", "color: black;");
+    }
 }
 
 // Sets up event listeners
@@ -80,19 +98,74 @@ function setEventListeners() {
 
         if (element.matches("button")) {
             if (parseInt(element.getAttribute('index')) === correctIndex) {
-                score++;
+                changeScore(1);
+                updateTimer();
+                updateScore();
                 showQuestion();
             } else {
-                score--;
+                changeScore(-1);
                 if (timeRemaining >= 10) {
                     timeRemaining = timeRemaining - 10;
                 } else {
                     timeRemaining = 0;
                 }
-                updateTimer();
+                updateTimer(true);
+                updateScore();
             }
         }
     });
+
+}
+
+function updateScore() {
+    scoreEl.textContent = score;
+}
+
+function stopGame() {
+
+    // Clear html of choices div to display play again message
+    choicesEl.innerHTML = "";
+
+    // Display large end game message
+    descriptionEl.textContent = "All Done!";
+
+    // Create score message and play again button
+    var thanksMessageEl = document.createElement("h3");
+    thanksMessageEl.textContent = `Your final score was ${score}.`;
+
+    var saveDivEl = document.createElement("div");
+    saveDivEl.className = "saveGameDiv";
+
+    var saveMessageEl = document.createElement("h4");
+    saveMessageEl.textContent = "Enter Initials:";
+    saveMessageEl.setAttribute("style", "margin-right: 10px;");
+
+    var saveNameInputEl = document.createElement("input");
+    saveNameInputEl.setAttribute("type", "text");
+    saveNameInputEl.setAttribute("style", "margin-right: 10px;");
+
+    var saveButtonEl = document.createElement("button");
+    saveButtonEl.textContent = "Submit";
+
+
+    
+    saveDivEl.appendChild(saveMessageEl);
+    saveDivEl.appendChild(saveNameInputEl);
+    saveDivEl.appendChild(saveButtonEl);
+
+    choicesEl.appendChild(thanksMessageEl);
+    quizEl.appendChild(saveDivEl);
+}
+
+function changeScore(value) {
+    score = score + value;
+    if (score < 0) {
+        score = 0;
+    }
+    updateScore();
+}
+
+function createSaveGame() {
 
 }
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,11 +8,17 @@
     <link rel="stylesheet" href="./assets/css/style.css">
     <title>Document</title>
 </head>
+
 <body>
     <header>
         <div class="highscores">
             <h4 class="highscore-link" id="highscore-link">
                 View Highscores
+            </h4>
+        </div>
+        <div class="scoreDisplay">
+            <h4 class="score" id="score">
+                Score: 0 
             </h4>
         </div>
         <div>
@@ -22,15 +29,16 @@
     </header>
 
     <main>
-        <div class="quiz">
+        <div class="quiz" id="quiz">
             <div class="question" id="question">
                 <h1 class="description" id="description">
                     Coding Quiz Challenge
                 </h1>
             </div>
-            <div class="choices">
+            <div class="choices" id="choices">
                 <h4 class="choiceDescription" id="choiceDescription">
-                    Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!  
+                    Try to answer the following code-related questions within the time limit. Keep in mind that
+                    incorrect answers will penalize your score/time by ten seconds!
                 </h4>
             </div>
             <div class="startButton" id="startButton">
@@ -43,4 +51,5 @@
 
     <script src="./assets/js/index.js" type="module"></script>
 </body>
+
 </html>
