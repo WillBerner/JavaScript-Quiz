@@ -2,6 +2,7 @@ import { questionArray } from "./questions.js"
 
 let score = 0;
 let timeRemaining = 0;
+let correctIndex = null;
 
 var timeEl = document.querySelector(".timer")
 
@@ -39,8 +40,7 @@ function showQuestion() {
         ansEl.appendChild(ans);
     })
 
-    var correctIndex = randomQuestion.correctAnsIndex;
-    setUpChoices(correctIndex);
+    correctIndex = randomQuestion.correctAnsIndex;
 
 }
 
@@ -75,20 +75,25 @@ function setEventListeners() {
     document.getElementById("highscore-link").addEventListener("click", function() {
         showHighScores();
     });
-}
-
-function setUpChoices(correctAnsIndex) {
     document.getElementById("choiceDescription").addEventListener("click", function(event) {
-        console.log(parseInt(event.target.getAttribute('index')));
-        console.log(correctAnsIndex);
-        if (parseInt(event.target.getAttribute('index')) === correctAnsIndex) {
-            score++;
-        } else {
-            score--;
-            timeRemaining = timeRemaining - 10;
-            updateTimer();
+        var element = event.target;
+
+        if (element.matches("button")) {
+            if (parseInt(element.getAttribute('index')) === correctIndex) {
+                score++;
+                showQuestion();
+            } else {
+                score--;
+                if (timeRemaining >= 10) {
+                    timeRemaining = timeRemaining - 10;
+                } else {
+                    timeRemaining = 0;
+                }
+                updateTimer();
+            }
         }
     });
+
 }
 
 setEventListeners();
