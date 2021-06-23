@@ -17,10 +17,12 @@ main {
 }
 
 button {
-    margin: 20px 0px 10px 0px;
+    margin: 5px 0px 0px 0px;
     background-color: blueviolet;
     color: white;
     border-radius: 5px;
+    font-size: large;
+    border: 30px;
 }
 
 button:hover {
@@ -57,4 +59,20 @@ button:hover {
     display: flex;
     margin: 25px 0px 0px 0px;
     text-align: center;
+}
+
+.startButton {
+    margin: 20px 0px 10px 0px;
+}
+
+@media screen and (max-width: 1060px) {
+    .quiz {
+        width: 70%;
+    }
+}
+
+@media screen and (max-width: 620px) {
+    .quiz {
+        width: 100%;
+    }
 }
