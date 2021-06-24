@@ -5,7 +5,6 @@ let timeRemaining = 0;
 let correctIndex = null;
 
 var timeEl = document.querySelector(".timer");
-var scoreEl = document.querySelector(".score")
 var descriptionEl = document.getElementById("description");
 var choicesEl = document.getElementById("choices");
 var choiceDescriptionEl = document.getElementById("choiceDescription");
@@ -19,7 +18,7 @@ var countdown = null;
 function playQuiz() {
     startButtonEl.style.display = "none";
 
-    startClock(10);
+    startClock(20);
     showQuestion();
 }
 
@@ -30,9 +29,18 @@ function showHighScores() {
     choicesEl.setAttribute("style", "flex-direction: column");
     startButtonEl.style.display = "none";
 
-    var highscores = JSON.parse(localStorage.getItem("highscores"));
+    if (document.getElementById("saveGameDiv")) {
+        quizEl.removeChild(document.getElementById("saveGameDiv"));
+    }
+    timeEl.setAttribute("style", "display: none");
+    document.getElementById("highscore-link").setAttribute("style", "display: none");
 
-    highscores.sort((a, b) => a.userScore - b.userScore);
+    var highscores = JSON.parse(localStorage.getItem("highscores"));
+    if (!highscores) {
+        return;
+    }
+
+    highscores.sort((a, b) => b.userScore - a.userScore);
 
     highscores.forEach(highscore => {
         var highscoreEl = document.createElement("h4");
@@ -40,6 +48,23 @@ function showHighScores() {
         choicesEl.appendChild(highscoreEl);
     })
 
+    var menuDiv = document.createElement("div");
+    menuDiv.style.display = "flex";
+    menuDiv.style.justifyContent = "center";
+
+    var playAgainButton = document.createElement("button");
+    playAgainButton.textContent = "Play again";
+    var clearHighscoresButton = document.createElement("button");
+    clearHighscoresButton.textContent = "Clear highscores";
+
+    menuDiv.appendChild(playAgainButton);
+    menuDiv.appendChild(clearHighscoresButton);
+    quizEl.appendChild(menuDiv);
+
+}
+
+function createHighscoreButtons() {
+    
 }
 
 // Show a question on the screen
@@ -90,6 +115,7 @@ timeRemaining = duractionInSeconds;
 function updateTimer(wrongAnswer = false) {
     if (timeRemaining === 0) {
         clearInterval(countdown);
+        timeEl.textContent = `Time is up.`;
         stopGame();
         return;
     }
@@ -117,7 +143,6 @@ function setEventListeners() {
             if (parseInt(element.getAttribute('index')) === correctIndex) {
                 changeScore(1);
                 updateTimer();
-                updateScore();
                 showQuestion();
             } else {
                 changeScore(-1);
@@ -127,16 +152,12 @@ function setEventListeners() {
                     timeRemaining = 0;
                 }
                 updateTimer(true);
-                updateScore();
             }
         }
     });
 
 }
 
-function updateScore() {
-    scoreEl.textContent = score;
-}
 
 function stopGame() {
 
@@ -160,12 +181,12 @@ function changeScore(value) {
     if (score < 0) {
         score = 0;
     }
-    updateScore();
 }
 
 function createSaveGame() {
     var saveDivEl = document.createElement("div");
     saveDivEl.className = "saveGameDiv";
+    saveDivEl.id = "saveGameDiv";
 
     var saveMessageEl = document.createElement("h4");
     saveMessageEl.textContent = "Enter Initials:";
