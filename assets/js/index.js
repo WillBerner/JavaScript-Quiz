@@ -19,28 +19,12 @@ var countdown = null;
 var questionsToAsk = [];
 
 
-// Function to start playing the quiz
-function playQuiz() {
-
-    // Hide start button
-    startButtonEl.style.display = "none";
-
-    // Start timer with a number of seconds
-    startClock(80);
-
-    // Reset questions to all be valid to ask
-    questionsToAsk = [...questionArray];
-
-    // Show the first question
-    showQuestion();
-}
-
 // Function called when View Highscores is clicked
 function showHighScores() {
 
     // Remove any text and set up the container display
     choiceDescriptionEl.textContent = "";
-    choiceDescriptionEl.setAttribute("style", "flex-direction: column");
+    choiceDescriptionEl.setAttribute("style", "flex-direction: column;");
     startButtonEl.style.display = "none";
 
     // If user was in a quiz, stop the timer and quiz
@@ -58,7 +42,7 @@ function showHighScores() {
 
     // Get the highscores from Localstoarge
     var highscores = JSON.parse(localStorage.getItem("highscores"));
-    
+
     // If no highscores exist, create a new empty array for them
     if (!highscores) {
         highscores = [];
@@ -68,9 +52,9 @@ function showHighScores() {
     highscores.sort((a, b) => b.userScore - a.userScore);
 
     // Render each highscore object as an element
-    highscores.forEach(highscore => {
+    highscores.forEach((highscore, index) => {
         var highscoreEl = document.createElement("h4");
-        highscoreEl.textContent = highscore.userInitials + ": " + highscore.userScore;
+        highscoreEl.textContent = `${(index + 1)}. ${highscore.userInitials}: ${highscore.userScore} points.`;
         highscoreEl.setAttribute("style", "background-color: #999999; padding: 10px; margin: 10px 0px 0px 5px; width: 100%;");
         choiceDescriptionEl.style.width = "100%";
         choiceDescriptionEl.appendChild(highscoreEl);
@@ -95,37 +79,13 @@ function createHighscoreButtons() {
     var menuDiv = document.createElement("div");
     menuDiv.style.display = "flex";
     menuDiv.style.justifyContent = "center";
+    menuDiv.setAttribute("style", "margin: 50px;");
 
     // Create 'go back' button
-    var goBackButtonEl = document.createElement("button");
-    goBackButtonEl.textContent = "Go Back";
-    goBackButtonEl.addEventListener("click", function() {
-
-        // On going back, reset elements to the homepage
-        choiceDescriptionEl.innerHTML = "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
-        descriptionEl.innerHTML = "Coding Quiz Challenge";
-
-        // Remove no-longer relevant elements
-        quizEl.removeChild(menuDiv);
-
-        // Show elements that had been previously 'hidden'
-        startButtonEl.style.display = "flex";
-        document.getElementById("highscore-link").setAttribute("style", "display: flex");
-        timeEl.setAttribute("style", "display: flex");
-
-    });
+    var goBackButtonEl = createBackButton(menuDiv);
 
     // Create 'clear scores' button
-    var clearHighscoresButtonEl = document.createElement("button");
-    clearHighscoresButtonEl.textContent = "Clear highscores";
-    clearHighscoresButtonEl.addEventListener("click", function() {
-
-        // Clear localstorage of highscores
-        localStorage.clear("highscores");
-
-        // Re-render empty highscore list
-        choiceDescriptionEl.innerHTML = "";
-    });
+    var clearHighscoresButtonEl = createClearScoresButton();
 
     // Add buttons to parent element
     menuDiv.appendChild(goBackButtonEl);
@@ -135,60 +95,70 @@ function createHighscoreButtons() {
     quizEl.appendChild(menuDiv);
 }
 
-// Get a random question and remove it from the future question pool
-function getQuestion() {
+// Function to create 'go back' button
+function createBackButton(parentDiv) {
+    // Create 'go back' button
+    var goBackButtonEl = document.createElement("button");
+    goBackButtonEl.textContent = "Go Back";
+    goBackButtonEl.addEventListener("click", function () {
 
-    // Get a random question from the questions array
-    var randomIndex = Math.floor(Math.random() * questionsToAsk.length)
-    var randomQuestion = questionsToAsk[randomIndex];
+        // On going back, reset elements to the homepage
+        choiceDescriptionEl.innerHTML = "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
+        descriptionEl.innerHTML = "Coding Quiz Challenge";
 
-    // Delete the question that's being asked
-    questionsToAsk.splice(randomIndex, 1);
+        // Remove no-longer relevant elements
+        quizEl.removeChild(parentDiv);
 
-    // Return the randomly chosen question
-    return randomQuestion;
+        // Show elements that had been previously 'hidden'
+        startButtonEl.style.display = "flex";
+        document.getElementById("highscore-link").setAttribute("style", "display: flex");
+        timeEl.setAttribute("style", "display: flex");
+
+    });
+
+    return goBackButtonEl;
 }
 
-// Show a question on the screen
-function showQuestion() { 
+// Function to create 'clear scores' button
+function createClearScoresButton() {
 
-    // Get a random question from an imported array
-    var randomQuestion = getQuestion();
+    // Create 'clear scores' button
+    var clearHighscoresButtonEl = document.createElement("button");
+    clearHighscoresButtonEl.textContent = "Clear highscores";
+    clearHighscoresButtonEl.addEventListener("click", function () {
 
-    // If there are no more questions, end the game
-    if (randomQuestion === undefined) {
-        stopGame();
-        return;
-    }
-    
-    // Show that random question on screen
-    var questionEl = document.getElementById("description");
-    questionEl.textContent = randomQuestion.question;
+        // Clear localstorage of highscores
+        localStorage.clear("highscores");
 
-    // Add answers based on the question to the DOM
-    var ansEl = document.getElementById("choiceDescription");
-    ansEl.textContent = "";
+        // Re-render empty highscore list
+        choiceDescriptionEl.innerHTML = "";
+    });
 
-    // Create and render a button answer element for each answer
-    randomQuestion.answers.forEach((answer, index) => {
-        var ans = document.createElement("button");
-        ans.textContent = ((index + 1) + ": " + answer);
-        ans.setAttribute("style", "display: block; height: 40px;")
-        ans.setAttribute("index", index);
-        ansEl.appendChild(ans);
-    })
+    return clearHighscoresButtonEl;
+}
 
-    // Save the correct index of the question to check against later
-    correctIndex = randomQuestion.correctAnsIndex;
+// Function to start playing the quiz
+function playQuiz() {
 
+    // Hide start button
+    startButtonEl.style.display = "none";
+
+    // Start timer with a number of seconds
+    startClock(80);
+
+    // Reset questions to all be valid to ask by copying external array
+    questionsToAsk = [...questionArray];
+
+    // Show the first question
+    showQuestion();
 }
 
 // Function for starting the timer, called on start of a new quiz
 function startClock(duractionInSeconds) {
 
-// Timer function, updating once per second
-timeRemaining = duractionInSeconds;
-    countdown = setInterval(function() {
+    // Timer function, updating once per second
+    timeRemaining = duractionInSeconds;
+    countdown = setInterval(function () {
         if (timeRemaining > 1) {
             updateTimer();
             timeRemaining--;
@@ -225,48 +195,60 @@ function updateTimer(wrongAnswer = false) {
     }
 }
 
-// Sets up event listeners
-function setEventListeners() {
+// Get a random question and remove it from the future question pool
+function getQuestion() {
 
-    // Set start button to play the quiz
-    document.getElementById("startButton").addEventListener("click",function() {
-        playQuiz();
-    });
+    // Get a random question from the questions array
+    var randomIndex = Math.floor(Math.random() * questionsToAsk.length)
+    var randomQuestion = questionsToAsk[randomIndex];
 
-    // Set the 'view highscore' link to show the highscores
-    document.getElementById("highscore-link").addEventListener("click", function() {
-        showHighScores();
-    });
+    // Delete the question that's being asked
+    questionsToAsk.splice(randomIndex, 1);
 
-    // Handle answering questions
-    document.getElementById("choiceDescription").addEventListener("click", function(event) {
+    // Return the randomly chosen question
+    return randomQuestion;
+}
 
-        // Get whichever answer button was selected
-        var element = event.target;
+// Show a question on the screen
+function showQuestion() {
 
-        // Make sure element was a button first
-        if (element.matches("button")) {
+    // Get a random question from an imported array
+    var randomQuestion = getQuestion();
 
-            // If button was the correct answer, increase the score and show the nect question
-            if (parseInt(element.getAttribute('index')) === correctIndex) {
-                changeScore(1);
-                updateTimer();
-                showQuestion();
-            
-                // If the button was wrong, take off a point, 10 seconds, and show the next question
-            } else {
-                changeScore(-1);
-                if (timeRemaining >= 10) {
-                    timeRemaining = timeRemaining - 10;
-                } else {
-                    timeRemaining = 0;
-                }
-                updateTimer(true);
-                showQuestion();
-            }
-        }
-    });
+    // If there are no more questions, end the game
+    if (randomQuestion === undefined) {
+        stopGame();
+        return;
+    }
 
+    // Show that random question on screen
+    var questionEl = document.getElementById("description");
+    questionEl.textContent = randomQuestion.question;
+
+    // Add answers based on the question to the DOM
+    var ansEl = document.getElementById("choiceDescription");
+    ansEl.textContent = "";
+
+    // Create and render a button answer element for each answer
+    randomQuestion.answers.forEach((answer, index) => {
+        var ans = document.createElement("button");
+        ans.textContent = ((index + 1) + ": " + answer);
+        ans.setAttribute("style", "display: block; height: 40px;")
+        ans.setAttribute("index", index);
+        ansEl.appendChild(ans);
+    })
+
+    // Save the correct index of the question to check against later
+    correctIndex = randomQuestion.correctAnsIndex;
+
+}
+
+// Update and validate the score
+function changeScore(value) {
+    score = score + value;
+    if (score < 0) {
+        score = 0;
+    }
 }
 
 // Stop the game if time is up or there are no more questions
@@ -286,22 +268,14 @@ function stopGame() {
     thanksMessageEl.textContent = `Your final score was ${score}.`;
 
     // Create the elements to handle saving a user's game data
-    createSaveGame();
+    createSaveGameElements();
 
     // Render thanks message with user's score
     choicesEl.appendChild(thanksMessageEl);
 }
 
-// Update and validate the score
-function changeScore(value) {
-    score = score + value;
-    if (score < 0) {
-        score = 0;
-    }
-}
-
 // Dynamically create elements to save a user's game
-function createSaveGame() {
+function createSaveGameElements() {
 
     // Create parent element
     var saveDivEl = document.createElement("div");
@@ -318,10 +292,8 @@ function createSaveGame() {
     saveNameInputEl.setAttribute("type", "text");
     saveNameInputEl.setAttribute("style", "margin-right: 10px;");
 
-    // Create submit button for submitting user's game data
-    var saveButtonEl = document.createElement("button");
-    saveButtonEl.textContent = "Submit";
-    saveButtonEl.addEventListener("click", function() {
+    // Function to save a user's game
+    function saveGame() {
 
         // Get highscore data from localstorage
         var highscores = JSON.parse(localStorage.getItem("highscores"));
@@ -354,7 +326,15 @@ function createSaveGame() {
 
         // Show the highscores of the game
         showHighScores();
-    });
+
+    }
+
+    // Create submit button for submitting user's game data
+    var saveButtonEl = document.createElement("button");
+    saveButtonEl.textContent = "Submit";
+
+    // Set up event-handler 
+    saveButtonEl.addEventListener("click", saveGame);
 
     // Add save elements to parent element
     saveDivEl.appendChild(saveMessageEl);
@@ -365,5 +345,49 @@ function createSaveGame() {
     quizEl.appendChild(saveDivEl);
 }
 
-setEventListeners();
+// Sets up event listeners
+function init() {
+
+    // Set start button to play the quiz
+    document.getElementById("startButton").addEventListener("click", function () {
+        playQuiz();
+    });
+
+    // Set the 'view highscore' link to show the highscores
+    document.getElementById("highscore-link").addEventListener("click", function () {
+        showHighScores();
+    });
+
+    // Handle answering questions
+    document.getElementById("choiceDescription").addEventListener("click", function (event) {
+
+        // Get whichever answer button was selected
+        var element = event.target;
+
+        // Make sure element was a button first
+        if (element.matches("button")) {
+
+            // If button was the correct answer, increase the score and show the nect question
+            if (parseInt(element.getAttribute('index')) === correctIndex) {
+                changeScore(1);
+                updateTimer();
+                showQuestion();
+
+                // If the button was wrong, take off a point, 10 seconds, and show the next question
+            } else {
+                changeScore(-1);
+                if (timeRemaining >= 10) {
+                    timeRemaining = timeRemaining - 10;
+                } else {
+                    timeRemaining = 0;
+                }
+                updateTimer(true);
+                showQuestion();
+            }
+        }
+    });
+
+}
+
+init();
 questionsToAsk = [...questionArray];
