@@ -12,24 +12,28 @@ var quizEl = document.getElementById("quiz");
 var startButtonEl = document.getElementById("startButton");
 
 var countdown = null;
+var questionsToAsk = [];
 
 
 // Function to start playing the quiz
 function playQuiz() {
     startButtonEl.style.display = "none";
+    startClock(80);
 
-    startClock(20);
+    questionsToAsk = [...questionArray];
     showQuestion();
 }
 
 // Function called when View Highscores is clicked
 function showHighScores() {
-    descriptionEl.innerText = "Highscores";
-    choicesEl.innerHTML = "";
-    choicesEl.setAttribute("style", "flex-direction: column");
+    choiceDescriptionEl.textContent = "";
+    choiceDescriptionEl.setAttribute("style", "flex-direction: column");
     startButtonEl.style.display = "none";
 
-    if (document.getElementById("saveGameDiv")) {
+    timeRemaining = 0;
+    updateTimer();
+
+    while (document.getElementById("saveGameDiv")) {
         quizEl.removeChild(document.getElementById("saveGameDiv"));
     }
     timeEl.setAttribute("style", "display: none");
@@ -37,41 +41,75 @@ function showHighScores() {
 
     var highscores = JSON.parse(localStorage.getItem("highscores"));
     if (!highscores) {
-        return;
+        highscores = [];
     }
 
     highscores.sort((a, b) => b.userScore - a.userScore);
-
     highscores.forEach(highscore => {
         var highscoreEl = document.createElement("h4");
         highscoreEl.textContent = highscore.userInitials + ": " + highscore.userScore;
-        choicesEl.appendChild(highscoreEl);
+        highscoreEl.setAttribute("style", "background-color: plum; padding: 10px; margin: 10px 0px 0px 5px; width: 100%;");
+        choiceDescriptionEl.style.width = "100%";
+        choiceDescriptionEl.appendChild(highscoreEl);
     })
 
-    var menuDiv = document.createElement("div");
-    menuDiv.style.display = "flex";
-    menuDiv.style.justifyContent = "center";
+    choicesEl.removeChild(choicesEl.firstChild);
+    choicesEl.appendChild(choiceDescriptionEl);
 
-    var playAgainButton = document.createElement("button");
-    playAgainButton.textContent = "Play again";
-    var clearHighscoresButton = document.createElement("button");
-    clearHighscoresButton.textContent = "Clear highscores";
-
-    menuDiv.appendChild(playAgainButton);
-    menuDiv.appendChild(clearHighscoresButton);
-    quizEl.appendChild(menuDiv);
+    descriptionEl.innerText = "Highscores";
+    createHighscoreButtons();
 
 }
 
 function createHighscoreButtons() {
-    
+    var menuDiv = document.createElement("div");
+    menuDiv.style.display = "flex";
+    menuDiv.style.justifyContent = "center";
+
+    var goBackButtonEl = document.createElement("button");
+    goBackButtonEl.textContent = "Go Back";
+    goBackButtonEl.addEventListener("click", function() {
+        choiceDescriptionEl.innerHTML = "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
+        descriptionEl.innerHTML = "Coding Quiz Challenge";
+
+        quizEl.removeChild(menuDiv);
+
+        startButtonEl.style.display = "flex";
+        document.getElementById("highscore-link").setAttribute("style", "display: flex");
+        timeEl.setAttribute("style", "display: flex");
+
+    });
+
+    var clearHighscoresButtonEl = document.createElement("button");
+    clearHighscoresButtonEl.textContent = "Clear highscores";
+    clearHighscoresButtonEl.addEventListener("click", function() {
+        localStorage.clear("highscores");
+        choiceDescriptionEl.innerHTML = "";
+    });
+
+    menuDiv.appendChild(goBackButtonEl);
+    menuDiv.appendChild(clearHighscoresButtonEl);
+    quizEl.appendChild(menuDiv);
+}
+
+function getQuestion() {
+    var randomIndex = Math.floor(Math.random() * questionsToAsk.length)
+    var randomQuestion = questionsToAsk[randomIndex];
+    questionsToAsk.splice(randomIndex, 1);
+
+    return randomQuestion;
 }
 
 // Show a question on the screen
 function showQuestion() { 
 
     // Get a random question from an imported array
-    var randomQuestion = questionArray[Math.floor(Math.random() * questionArray.length)];
+    var randomQuestion = getQuestion();
+
+    if (randomQuestion === undefined) {
+        stopGame();
+        return
+    }
     
     // Show that random question on screen
     var questionEl = document.getElementById("description");
@@ -152,6 +190,7 @@ function setEventListeners() {
                     timeRemaining = 0;
                 }
                 updateTimer(true);
+                showQuestion();
             }
         }
     });
@@ -160,9 +199,10 @@ function setEventListeners() {
 
 
 function stopGame() {
+    clearInterval(countdown);
 
     // Clear html of choices div to display play again message
-    choicesEl.innerHTML = "";
+    choicesEl.textContent = "";
 
     // Display large end game message
     descriptionEl.textContent = "All Done!";
@@ -213,6 +253,11 @@ function createSaveGame() {
         }
 
         localStorage.setItem("highscores", JSON.stringify(highscores));
+        score = 0;
+        if (saveDivEl) {
+            quizEl.removeChild(saveDivEl);
+        }
+        showHighScores();
     });
 
 
@@ -220,8 +265,8 @@ function createSaveGame() {
     saveDivEl.appendChild(saveMessageEl);
     saveDivEl.appendChild(saveNameInputEl);
     saveDivEl.appendChild(saveButtonEl);
-
     quizEl.appendChild(saveDivEl);
 }
 
 setEventListeners();
+questionsToAsk = [...questionArray];
