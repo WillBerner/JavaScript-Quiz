@@ -18,7 +18,6 @@ var startButtonEl = document.getElementById("startButton");
 var countdown = null;
 var questionsToAsk = [];
 
-
 // Function called when View Highscores is clicked
 function showHighScores() {
 
