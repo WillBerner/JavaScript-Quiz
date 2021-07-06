@@ -143,7 +143,7 @@ function playQuiz() {
     startButtonEl.style.display = "none";
 
     // Start timer with a number of seconds
-    startClock(80);
+    startClock(60);
 
     // Reset questions to all be valid to ask by copying external array
     questionsToAsk = [...questionArray];
