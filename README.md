@@ -1,4 +1,9 @@
-A quiz game to test your knowledge of JavaScript fundamentals. You have a certain amount of time to answer all the questions, but incorrect answers will shorten the amount of time left and detract from your score. You can view your recent scores as well as other scores taken across different sessions via localStorage.
+# Javascript Quiz
+A quiz game to test your knowledge of JavaScript fundamentals. 
+
+You have a certain amount of time to answer all the questions, but incorrect answers will shorten the amount of time left by 10 seconds and detract a point from your score. The timer will blink red while detracting your time if you answer incorrectly. You can view your recent scores as well as other scores taken across different games via localStorage.
+
+Built from scratch from Javascript, HTML, and CSS. Uses an external .js file to store the questions and correct answers. An interval was used to create the game timer and questions and answers were generated dynamically from imported question objects.
 
 The quiz can be taken here:
 
